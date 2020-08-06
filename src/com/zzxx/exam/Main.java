@@ -14,11 +14,14 @@ public class Main {
         MenuFrame menuFrame = new MenuFrame();
         EntityContext entityContext = new EntityContext();
 
+        //互相套娃
         examService.setEntityContext(entityContext);
         loginFrame.setController(context);
         context.setLoginFrame(loginFrame);
         context.setExamService(examService);
         context.setMenuFrame(menuFrame);
+
+
         context.start();
 
 

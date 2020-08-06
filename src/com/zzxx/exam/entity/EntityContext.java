@@ -86,7 +86,7 @@ public class EntityContext {
                 question.setScore(Integer.valueOf(split2[1]));
                 //level
                 String[] split3 = split[2].split("\\=");
-                question.setScore(Integer.valueOf(split3[1]));
+                question.setLevel(Integer.valueOf(split3[1]));
                 //title
                 line = br.readLine();
                 question.setTitle(line);
@@ -184,11 +184,15 @@ public class EntityContext {
     @Test
     public void test() {
         EntityContext ec = new EntityContext();
-        ec.loadUsers("C:\\Users\\Administrator\\Desktop\\java\\ideaworks\\exam\\src\\com\\zzxx\\exam\\util\\user.txt");
-        Map<String, User> users = ec.getUsers();
-        Set<String> set = users.keySet();
-        for (String integer : set) {
-            System.out.println(users.get(integer).toString());
+        Map<Integer, List<Question>> questions = ec.getQuestions();
+        Set<Integer> set = questions.keySet();
+        for (Integer integer : set) {
+            List<Question> list = questions.get(integer);
+            for (Question question : list) {
+                System.out.println(question.toString());
+            }
         }
+
+
     }
 }
