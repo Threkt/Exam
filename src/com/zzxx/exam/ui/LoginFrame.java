@@ -44,7 +44,7 @@ public class LoginFrame extends JFrame {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-
+                System.exit(-1);
             }
         });
     }
@@ -82,7 +82,7 @@ public class LoginFrame extends JFrame {
         //点cancel按钮...
         cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                System.exit(-1);
             }
         });
         return p;

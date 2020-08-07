@@ -13,10 +13,12 @@ public class EntityContext {
     private Map<String, User> users = new HashMap<>();
     //key - 难度 value - 难度级别对应的所有试题
     private Map<Integer, List<Question>> questions = new HashMap<>();
+    private List<String> rules = new ArrayList<>();
 
     public EntityContext(){
         loadUsers("C:\\Users\\Administrator\\Desktop\\java\\ideaworks\\exam\\src\\com\\zzxx\\exam\\util\\user.txt");
         loadQuestions("C:\\Users\\Administrator\\Desktop\\java\\ideaworks\\exam\\src\\com\\zzxx\\exam\\util\\corejava.txt");
+        loadRules("C:\\Users\\Administrator\\Desktop\\java\\ideaworks\\exam\\src\\com\\zzxx\\exam\\util\\rule.txt");
     }
 
     //读取user.txt，封装为user存到map里
@@ -53,16 +55,6 @@ public class EntityContext {
         BufferedReader br = null;
         String line;
         int count=0;
-        List<Question> list1 = new ArrayList<>();
-        List<Question> list2 = new ArrayList<>();
-        List<Question> list3 = new ArrayList<>();
-        List<Question> list4 = new ArrayList<>();
-        List<Question> list5 = new ArrayList<>();
-        List<Question> list6 = new ArrayList<>();
-        List<Question> list7 = new ArrayList<>();
-        List<Question> list8 = new ArrayList<>();
-        List<Question> list9 = new ArrayList<>();
-        List<Question> list10 = new ArrayList<>();
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
             while ((line = br.readLine())!=null){
@@ -109,48 +101,35 @@ public class EntityContext {
                 if (answers.size()>1){
                     question.setType(1);
                 }
-                switch (question.getLevel()){
-                    case 1:
-                        list1.add(question);
-                        questions.put(1,list1);
-                        break;
-                    case 2:
-                        list2.add(question);
-                        questions.put(2,list2);
-                        break;
-                    case 3:
-                        list3.add(question);
-                        questions.put(3,list3);
-                        break;
-                    case 4:
-                        list4.add(question);
-                        questions.put(4,list4);
-                        break;
-                    case 5:
-                        list5.add(question);
-                        questions.put(5,list5);
-                        break;
-                    case 6:
-                        list6.add(question);
-                        questions.put(6,list6);
-                        break;
-                    case 7:
-                        list7.add(question);
-                        questions.put(7,list7);
-                        break;
-                    case 8:
-                        list2.add(question);
-                        questions.put(8,list8);
-                        break;
-                    case 9:
-                        list1.add(question);
-                        questions.put(9,list9);
-                        break;
-                    case 10:
-                        list2.add(question);
-                        questions.put(10,list10);
-                        break;
+                int level = question.getLevel();
+                List<Question> list = questions.get(level);
+                if (list==null){
+                    list=new ArrayList<>();
                 }
+                list.add(question);
+                questions.put(level,list);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if (br!=null){
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    //读取规则
+    public void loadRules(String filename){
+        BufferedReader br = null;
+        String line;
+        try {
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
+            while ((line=br.readLine())!=null){
+                rules.add(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -181,16 +160,40 @@ public class EntityContext {
         this.questions = questions;
     }
 
+    public List<String> getRules() {
+        return rules;
+    }
+
+    public void setRules(List<String> rules) {
+        this.rules = rules;
+    }
+
+    //根据用户ID，从数据库中查询用户对象
+    public User findUserById(String id){
+        return users.get(id);
+    }
+
+    //根据试题的难度级别，获得对应难度级别的试题列表
+    public List<Question> findQuestionsByLevel(int level){
+        List<Question> list = questions.get(level);
+        return list;
+    }
+
+
+
+
+
+
+
+
+
     @Test
     public void test() {
         EntityContext ec = new EntityContext();
-        Map<Integer, List<Question>> questions = ec.getQuestions();
-        Set<Integer> set = questions.keySet();
-        for (Integer integer : set) {
-            List<Question> list = questions.get(integer);
-            for (Question question : list) {
-                System.out.println(question.toString());
-            }
+        List<Question> questionsByLevel = ec.findQuestionsByLevel(1);
+        for (Question question : questionsByLevel) {
+            String s = question.toString();
+            System.out.println(s);
         }
 
 

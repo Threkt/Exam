@@ -1,5 +1,6 @@
 package com.zzxx.exam.ui;
 
+import com.zzxx.exam.controller.ClientContext;
 import org.junit.Test;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ import java.awt.event.WindowEvent;
  * 主菜单界面
  */
 public class MenuFrame extends JFrame {
+    private ClientContext controller;
 
     private JLabel info; // 记录用户的信息
 
@@ -30,7 +32,7 @@ public class MenuFrame extends JFrame {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-
+                System.exit(-1);
             }
         });
     }
@@ -85,21 +87,21 @@ public class MenuFrame extends JFrame {
         //点开始后..
         start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                controller.kaishi();
             }
         });
 
         //点考试规则后..
         msg.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-
+                controller.msg();
             }
         });
 
         //点离开后..
         exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                controller.exit();
             }
         });
 
@@ -126,6 +128,10 @@ public class MenuFrame extends JFrame {
 
     public void setInfo(JLabel info) {
         this.info = info;
+    }
+
+    public void setController(ClientContext controller) {
+        this.controller = controller;
     }
 
     //测试

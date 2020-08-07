@@ -1,5 +1,6 @@
 package com.zzxx.exam.ui;
 
+import com.zzxx.exam.controller.ClientContext;
 import org.junit.Test;
 
 import javax.swing.*;
@@ -10,8 +11,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExamFrame extends JFrame {
+    private JLabel  examInfo;
+    private ClientContext clientContext;
     // 选项集合, 方便答案读取的处理
     private Option[] options = new Option[4];
 
@@ -29,7 +34,7 @@ public class ExamFrame extends JFrame {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {// 正在关闭的时候
-
+                System.exit(-1);
             }
         });
     }
@@ -49,10 +54,13 @@ public class ExamFrame extends JFrame {
         return pane;
     }
 
+
+
+
     private JPanel createCenterPane() {
         JPanel pane = new JPanel(new BorderLayout());
         // 注意!
-        JLabel examInfo = new JLabel("姓名:XXX 考试:XXX 考试时间:XXX", JLabel.CENTER);
+        examInfo = new JLabel("姓名:XXX 考试:XXX 考试时间:XXX", JLabel.CENTER);
         pane.add(BorderLayout.NORTH, examInfo);
 
         //题目内容
@@ -125,29 +133,29 @@ public class ExamFrame extends JFrame {
         //点上一题..
         prev.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                clientContext.last();
             }
         });
         //点下一题..
         next.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                clientContext.next();
             }
         });
         //点交卷..
         send.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                clientContext.jiaojuan();
             }
         });
-
         return pane;
     }
+
 
     /**
      * 使用内部类扩展了 JCheckBox 增加了val 属性, 代表答案值
      */
-    class Option extends JCheckBox {
+    public class Option extends JCheckBox {
         int value;
 
         public Option(int val, String txt) {
@@ -166,8 +174,9 @@ public class ExamFrame extends JFrame {
 
     private JLabel timer;
 
+    //更新剩余时间
     public void updateTime(long h, long m, long s) {
-        String time = h + ":" + m + ":" + s;
+        String time ="剩余时间："+ h + ":" + m + ":" + s;
         if (m < 5) {
             timer.setForeground(new Color(0xC85848));
         } else {
@@ -175,6 +184,32 @@ public class ExamFrame extends JFrame {
         }
         timer.setText(time);
     }
+    //更新 题目
+    public void updateQuestionArea(String questionArea){
+        this.questionArea.setText(questionArea);
+    }
+
+    //更新姓名 考试 考试时间
+    public void updateInfo(String name,String title,int time) {
+        examInfo.setText("姓名:"+name+" 考试: "+title+" 考试时间:"+time+"分钟");
+    }
+
+    //更新姓名 考试 考试时间
+    public void updateQuestionCount(int i) {
+        questionCount.setText("题目:20 的第 "+i+"题");
+    }
+
+
+    public void setClientContext(ClientContext clientContext) {
+        this.clientContext = clientContext;
+    }
+
+    public Option[] getOptions() {
+        return options;
+    }
+
+
+
 
     //测试
     @Test

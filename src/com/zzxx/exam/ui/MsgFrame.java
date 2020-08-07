@@ -21,12 +21,13 @@ public class MsgFrame extends JFrame {
         setContentPane(createContentPane());
         setLocationRelativeTo(null);
         //点X的时候...
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+       /*setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
 
             }
-        });
+        });*/
     }
 
     private JScrollPane createContentPane() {

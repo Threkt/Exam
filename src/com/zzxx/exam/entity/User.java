@@ -63,12 +63,12 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-/*    @Override
+    @Override
     public String toString() {
         return name;
-    }*/
+    }
 
-    @Override
+    /*@Override
     public String toString() {
         return "User{" +
                 "id=" + id +
@@ -78,7 +78,7 @@ public class User implements Serializable {
                 ", email='" + email + '\'' +
                 '}';
     }
-
+*/
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

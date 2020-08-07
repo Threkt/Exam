@@ -3,8 +3,7 @@ package com.zzxx.exam;
 import com.zzxx.exam.Service.ExamService;
 import com.zzxx.exam.controller.ClientContext;
 import com.zzxx.exam.entity.EntityContext;
-import com.zzxx.exam.ui.LoginFrame;
-import com.zzxx.exam.ui.MenuFrame;
+import com.zzxx.exam.ui.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,8 +12,16 @@ public class Main {
         ExamService examService = new ExamService();
         MenuFrame menuFrame = new MenuFrame();
         EntityContext entityContext = new EntityContext();
+        MsgFrame msgFrame = new MsgFrame();
+        ExamFrame examFrame = new ExamFrame();
+        WelcomeWindow welcomeWindow = new WelcomeWindow();
 
         //互相套娃
+        context.setWelcomeWindow(welcomeWindow);
+        examFrame.setClientContext(context);
+        context.setExamFrame(examFrame);
+        context.setMsgFrame(msgFrame);
+        menuFrame.setController(context);
         examService.setEntityContext(entityContext);
         loginFrame.setController(context);
         context.setLoginFrame(loginFrame);
