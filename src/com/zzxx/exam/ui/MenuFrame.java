@@ -105,6 +105,14 @@ public class MenuFrame extends JFrame {
             }
         });
 
+        //点分数后...
+        result.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.result();
+            }
+        });
+
         return pane;
     }
 

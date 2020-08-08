@@ -9,6 +9,10 @@ import com.zzxx.exam.entity.User;
 import com.zzxx.exam.ui.*;
 import org.w3c.dom.ls.LSOutput;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -26,8 +30,9 @@ public class ClientContext {
     private ExamService examService;
     private User user;
     private QuestionInfo questionInfo;
+
     //开始
-    public void start(){
+    public void start() {
         welcomeWindow.setVisible(true);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -35,10 +40,11 @@ public class ClientContext {
                 welcomeWindow.setVisible(false);
                 loginFrame.setVisible(true);
             }
-        },3000L);
+        }, 3000L);
     }
+
     //点击login
-    public void login(){
+    public void login() {
         String id = loginFrame.getIdField().getText();
         String psw = loginFrame.getPwdField().getText();
         try {
@@ -50,20 +56,22 @@ public class ClientContext {
             loginFrame.updateMessage(e.getMessage());
         }
     }
+
     //点msg(考试规则)
-    public void msg(){
+    public void msg() {
         String msg = examService.msg();
         msgFrame.showMsg(msg);
         msgFrame.setVisible(true);
     }
 
-    private long m=30L;
-    private long s=0L;
+    private long m = 30L;
+    private long s = 0L;
+
     //点start
-    public void kaishi(){
+    public void kaishi() {
         //获得用户信息后更新 用户 考试 考试时间
         ExamInfo info = examService.kaishi(user);
-        examFrame.updateInfo(info.getUser().getName(),info.getTitle(),info.getTimeLimit());
+        examFrame.updateInfo(info.getUser().getName(), info.getTitle(), info.getTimeLimit());
 
         //获取考试题目（第一个默认为0）并更新
         Question questionFormPaper = examService.getQuestionFormPaper(questionIndex);
@@ -73,13 +81,16 @@ public class ClientContext {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             public void run() {
-                if (s==0){
-                    examFrame.updateTime(0l,m--,s);
-                    s=59L;
+                if (m==0&&s==0){
+                    jiaojuan();
                 }
-                examFrame.updateTime(0l,m,s--);
+                if (s == 0) {
+                    examFrame.updateTime(0l, m--, s);
+                    s = 59L;
+                }
+                examFrame.updateTime(0l, m, s--);
             }
-        },0,1000L);
+        }, 0, 1000L);
 
 
         //更新界面
@@ -88,7 +99,7 @@ public class ClientContext {
     }
 
     //点离开
-    public void exit(){
+    public void exit() {
         menuFrame.setVisible(false);
         loginFrame.setVisible(true);
     }
@@ -97,12 +108,12 @@ public class ClientContext {
     private int questionIndex = 0;
 
     //下一题
-    public void next(){
-        if (questionIndex<19){
+    public void next() {
+        if (questionIndex < 19) {
             List<Integer> list = new ArrayList<>();
             ExamFrame.Option[] options = examFrame.getOptions();
             for (int i = 0; i < 4; i++) {
-                if (options[i].isSelected()){
+                if (options[i].isSelected()) {
                     list.add(i);
                 }
             }
@@ -110,10 +121,10 @@ public class ClientContext {
             questionInfo.setUserAnswers(list);
 
 
-            questionIndex ++;
+            questionIndex++;
             Question questionFormPaper = examService.getQuestionFormPaper(questionIndex);
             examFrame.updateQuestionArea(questionFormPaper.toString());
-            examFrame.updateQuestionCount(questionIndex+1);
+            examFrame.updateQuestionCount(questionIndex + 1);
 
 
             for (int i = 0; i < 4; i++) {
@@ -123,7 +134,7 @@ public class ClientContext {
             List<Integer> userAnswers = questionInfo.getUserAnswers();
             for (int i = 0; i < userAnswers.size(); i++) {
                 for (int i1 = 0; i1 < 4; i1++) {
-                    if (userAnswers.get(i)==i1){
+                    if (userAnswers.get(i) == i1) {
                         options[i1].setSelected(true);
                     }
                 }
@@ -132,22 +143,22 @@ public class ClientContext {
     }
 
     //上一题
-    public void last(){
-        if (questionIndex>0){
+    public void last() {
+        if (questionIndex > 0) {
             List<Integer> list = new ArrayList<>();
             ExamFrame.Option[] options = examFrame.getOptions();
             for (int i = 0; i < 4; i++) {
-                if (options[i].isSelected()){
+                if (options[i].isSelected()) {
                     list.add(i);
                 }
             }
             questionInfo = examService.getQuestionInfoFormPaper(questionIndex);
             questionInfo.setUserAnswers(list);
 
-            questionIndex --;
+            questionIndex--;
             Question questionFormPaper = examService.getQuestionFormPaper(questionIndex);
             examFrame.updateQuestionArea(questionFormPaper.toString());
-            examFrame.updateQuestionCount(questionIndex+1);
+            examFrame.updateQuestionCount(questionIndex + 1);
 
             for (int i = 0; i < 4; i++) {
                 options[i].setSelected(false);
@@ -156,7 +167,7 @@ public class ClientContext {
             List<Integer> userAnswers = questionInfo.getUserAnswers();
             for (int i = 0; i < userAnswers.size(); i++) {
                 for (int i1 = 0; i1 < 4; i1++) {
-                    if (userAnswers.get(i)==i1){
+                    if (userAnswers.get(i) == i1) {
                         options[i1].setSelected(true);
                     }
                 }
@@ -165,43 +176,52 @@ public class ClientContext {
         }
     }
 
-    private int zongfeng=0;
-    //交卷
-    public void jiaojuan(){
-            List<Integer> list = new ArrayList<>();
-            ExamFrame.Option[] options = examFrame.getOptions();
-            for (int i = 0; i < 4; i++) {
-                if (options[i].isSelected()){
-                    list.add(i);
-                }
-            }
-            questionInfo = examService.getQuestionInfoFormPaper(questionIndex);
-            questionInfo.setUserAnswers(list);
+    private int zongfeng = 0;
 
+    //交卷
+    public void jiaojuan() {
+        List<Integer> list = new ArrayList<>();
+        ExamFrame.Option[] options = examFrame.getOptions();
+        for (int i = 0; i < 4; i++) {
+            if (options[i].isSelected()) {
+                list.add(i);
+            }
+        }
+        questionInfo = examService.getQuestionInfoFormPaper(questionIndex);
+        questionInfo.setUserAnswers(list);
+
+        //计算总分
         for (int i = 0; i < questionIndex; i++) {
             List<Integer> answersFromPaper = examService.getAnswersFromPaper(i);
             Question questionFormPaper = examService.getQuestionFormPaper(i);
             List<Integer> answers = questionFormPaper.getAnswers();
-            if (answers.size()==answersFromPaper.size()&&answers.containsAll(answersFromPaper)){
-                zongfeng+=questionFormPaper.getScore();
+            if (answers.size() == answersFromPaper.size() && answers.containsAll(answersFromPaper)) {
+                zongfeng += questionFormPaper.getScore();
             }
         }
+
+        //保存成绩到txt中
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream("成绩.txt")), true);
+            pw.println(user.getName() + "的成绩为：" + zongfeng);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (pw != null) {
+                pw.close();
+            }
+        }
+
         examFrame.setVisible(false);
         menuFrame.setVisible(true);
-
     }
 
-
-
-
-
-
-
-
-
-
-
-
+    //点成绩
+    public void result(){
+        msgFrame.showMsg(user.getName() + "的成绩为：" + zongfeng);
+        msgFrame.setVisible(true);
+    }
 
 
     public void setLoginFrame(LoginFrame loginFrame) {
